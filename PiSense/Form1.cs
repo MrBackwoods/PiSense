@@ -23,12 +23,15 @@ namespace PiSense
         }
 
         // Variables to store sensor and webcam data
-        public SensorData data;
-        public Image image;
+        private SensorData data;
+        private Image image;
+
+        // Timer
+        private System.Threading.Timer timer;
 
         // Raspberry PI's API's user credentials
-        public string username = "Test";
-        public string password = "Pass";
+        private string username = "Test";
+        private string password = "Pass";
 
         // Starts updating data to form at form load
         private void Form1_Load(object sender, EventArgs e)
@@ -36,7 +39,7 @@ namespace PiSense
             GetPiData();
         }
 
-        // Gets new data from Raspberry Pi every 30 seconds
+        // Gets new data from Raspberry Pi every 15 seconds
         void GetPiData()
         {
             try
@@ -47,7 +50,7 @@ namespace PiSense
                 string credentials = Convert.ToBase64String(Encoding.ASCII.GetBytes(username + ":" + password));
                 client.Headers[HttpRequestHeader.Authorization] = "Basic " + credentials;
 
-                var timer = new System.Threading.Timer((e) =>
+                timer = new System.Threading.Timer((e) =>
                 {
                     Stream imgStream = client.OpenRead("http://10.0.0.2:8001/webcam");
                     string sensorJson = client.DownloadString("http://10.0.0.2:8001/hometemp");
@@ -63,7 +66,7 @@ namespace PiSense
                         SetFormData();
                     }
 
-                }, null, TimeSpan.Zero, TimeSpan.FromSeconds(30));
+                }, null, TimeSpan.Zero, TimeSpan.FromSeconds(15));
             }
             catch (Exception e)
             {
