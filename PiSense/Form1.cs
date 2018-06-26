@@ -36,7 +36,7 @@ namespace PiSense
             GetPiData();
         }
 
-        // Gets new data from Raspberry Pi every 10 seconds
+        // Gets new data from Raspberry Pi every 30 seconds
         void GetPiData()
         {
             try
